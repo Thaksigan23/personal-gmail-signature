@@ -160,7 +160,7 @@
       const imgs = [...root.querySelectorAll("img")];
       await Promise.all(imgs.map(async (img) => {
         const src = img.getAttribute("src");
-        if (!src || src.startsWith("data:")) return;
+        if (!src || src.startsWith("data:") || src.startsWith("https://")) return;
         const r = await fetch(src);
         const blob = await r.blob();
         const dataUrl = await new Promise((resolve) => {

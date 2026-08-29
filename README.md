@@ -11,4 +11,4 @@ Details come from [portfolio-thaksigan.vercel.app](https://portfolio-thaksigan.v
 3. Gmail → Settings → **See all settings** → **General** → **Signature**.
 4. Paste, set as default, **Save changes**.
 
-Copy from the preview page so Gmail keeps the photo and icons. `email.html` is the table fragment used in the preview.
+Copy from the preview page (or paste `email.html`) so Gmail keeps the public photo and icon URLs. Images are hosted from this GitHub repo via jsDelivr, which Gmail can load.
