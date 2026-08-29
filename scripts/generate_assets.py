@@ -50,12 +50,10 @@ def make_portrait() -> None:
         top = h - side
     cropped = src.crop((left, top, left + side, top + side))
     cropped = cropped.resize((PHOTO_SIZE, PHOTO_SIZE), Image.Resampling.LANCZOS)
+    cropped = ImageEnhance.Contrast(cropped).enhance(1.04)
+    cropped = ImageEnhance.Color(cropped).enhance(1.05)
 
-    gray = ImageOps.grayscale(cropped).convert("RGB")
-    gray = ImageEnhance.Contrast(gray).enhance(1.08)
-    gray = ImageEnhance.Brightness(gray).enhance(1.02)
-
-    rgba = gray.convert("RGBA")
+    rgba = cropped.convert("RGBA")
     rgba.putalpha(circle_mask(PHOTO_SIZE))
     rgba.save(ASSETS / "profile-circle.png", "PNG")
     print("wrote profile-circle.png")
