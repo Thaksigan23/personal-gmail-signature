@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gmail signature — Sivaruban Thaksigan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1c1c1c;
+      --muted: #6b6b6b;
+      --teal: #1A9B96;
+      --paper: #f6f4f0;
+      --line: #e6e2da;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Outfit, system-ui, sans-serif;
+      background: #eceae4;
+      color: var(--ink);
+    }
+    .page {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+    h1 {
+      font-family: Montserrat, sans-serif;
+      font-size: 22px;
+      margin: 0 0 8px;
+      letter-spacing: -0.3px;
+    }
+    .lede {
+      color: var(--muted);
+      margin: 0 0 28px;
+      line-height: 1.5;
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+    button, .btn {
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 18px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #copy-btn {
+      background: var(--teal);
+      color: #fff;
+    }
+    #copy-btn.done { background: #2f7a4a; }
+    .ghost {
+      background: #fff;
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+    .email-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(40, 30, 10, 0.08);
+      overflow: hidden;
+    }
+    .email-meta {
+      padding: 22px 28px 0;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+    .email-meta strong { color: var(--ink); font-weight: 600; }
+    .email-body {
+      padding: 18px 28px 8px;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    .sig-wrap {
+      padding: 8px 12px 20px;
+    }
+    .sig-label {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #9a958c;
+      padding: 0 16px 8px;
+    }
+    ol {
+      color: var(--muted);
+      padding-left: 20px;
+      line-height: 1.7;
+    }
+    .hint {
+      margin-top: 28px;
+      padding: 18px 20px;
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+    }
+    .hint h2 {
+      font-size: 15px;
+      margin: 0 0 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>Your Gmail signature</h1>
+    <p class="lede">Same layout as the sample: circular portrait, teal accents, contact row, and social icons. Copy it from this page into Gmail so the images stay attached.</p>
+
+    <div class="actions">
+      <button type="button" id="copy-btn">Copy signature</button>
+      <a class="btn ghost" href="email.html">Open pasteable HTML</a>
+    </div>
+
+    <div class="email-card">
+      <div class="email-meta">
+        <div><strong>From</strong> &nbsp; Sivaruban Thaksigan &lt;thaksithaksigan@gmail.com&gt;</div>
+        <div><strong>Subject</strong> &nbsp; Quick intro</div>
+      </div>
+      <div class="email-body">
+        Hi,<br><br>
+        Thanks for reaching out — I’d be happy to chat.<br><br>
+        Best regards,
+      </div>
+      <div class="sig-label">Signature</div>
+      <div class="sig-wrap" id="signature">
+        <!--SIGNATURE-->
+      </div>
+    </div>
+
+    <div class="hint">
+      <h2>Add it in Gmail</h2>
+      <ol>
+        <li>Click <strong>Copy signature</strong> above (or select the signature in the preview and copy).</li>
+        <li>Open Gmail → Settings (gear) → <strong>See all settings</strong> → <strong>General</strong>.</li>
+        <li>Scroll to <strong>Signature</strong>, create or edit one, then paste.</li>
+        <li>Set it as the default for new emails and replies, then <strong>Save changes</strong>.</li>
+      </ol>
+    </div>
+  </div>
+
+  <script>
+    async function loadSignature() {
+      const res = await fetch("email.html");
+      const html = await res.text();
+      document.getElementById("signature").innerHTML = html;
+    }
+
+    async function imagesToDataUrls(root) {
+      const imgs = [...root.querySelectorAll("img")];
+      await Promise.all(imgs.map(async (img) => {
+        const src = img.getAttribute("src");
+        if (!src || src.startsWith("data:")) return;
+        const r = await fetch(src);
+        const blob = await r.blob();
+        const dataUrl = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.readAsDataURL(blob);
+        });
+        img.setAttribute("src", dataUrl);
+      }));
+    }
+
+    function markCopied(btn) {
+      btn.textContent = "Copied — paste in Gmail";
+      btn.classList.add("done");
+      setTimeout(() => {
+        btn.textContent = "Copy signature";
+        btn.classList.remove("done");
+      }, 2400);
+    }
+
+    document.getElementById("copy-btn").addEventListener("click", async () => {
+      const btn = document.getElementById("copy-btn");
+      const source = document.getElementById("signature");
+      const clone = source.cloneNode(true);
+      try {
+        await imagesToDataUrls(clone);
+        const html = clone.innerHTML;
+        await navigator.clipboard.write([
+          new ClipboardItem({
+            "text/html": new Blob([html], { type: "text/html" }),
+            "text/plain": new Blob(["Sivaruban Thaksigan"], { type: "text/plain" }),
+          }),
+        ]);
+        markCopied(btn);
+      } catch (err) {
+        const range = document.createRange();
+        range.selectNodeContents(source);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        document.execCommand("copy");
+        markCopied(btn);
+      }
+    });
+
+    loadSignature();
+  </script>
+</body>
+</html>
